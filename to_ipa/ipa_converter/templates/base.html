@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  {% load static %}
+  <link rel="stylesheet" type="text/css" href="{% static 'styles.css' %}">
+  <title>ToIPA</title>
+</head>
+<nav class="navbar navbar-expand navbar-dark bg-dark dropshadow">
+  <a class="navbar-brand" href="/">[tʰu aɪ pʰiː eɪ]</a>
+  <ul class="navbar-nav mr-auto">
+    <li class="nav-item">
+      <a class="nav-link" href="/about">About</a>
+    </li>
+  </ul>
+  <ul class="navbar-nav ml-auto">
+    <li class="nav-item">
+      <a class="navbar-brand" href="https://www.github.com/lincolnschick"><img src="{% static 'github-logo.svg' %}" alt="github" height="30"></a>
+    </li>
+    <li class="nav-item">
+      <a class="navbar-brand" href="https://www.linkedin.com/in/lincolnschick"><img src="{% static 'linkedin-logo.svg' %}" alt="linkedin" height="30"></a>
+    </li>
+  </ul>
+</nav>
+<body>
+  <div class="center">
+    <div class="dropshadow">
+      <div class="input-group" style="width: 60rem;">
+
+        <select class="form-control" aria-label="select a language">
+          <option selected>Select a language</option>
+          <option value="english">English</option>
+          <option value="spanish">Spanish</option>
+          <option value="pinyin">Pinyin</option>
+        </select>
+
+        <select class="form-control input-group-append" aria-label="select IPA type">
+          <option selected>Select IPA type</option>
+          <option value="broad">Broad IPA</option>
+          <option value="narrow">Narrow IPA</option>
+        </select>
+
+      </div>
+
+      <div class="input-group" style="width: 60rem;">
+        <textarea class="form-control non-resizable" id="input" rows="12" placeholder="Enter text"></textarea>
+        <textarea readonly class="form-control input-group-append non-resizable" id="output" rows="12" placeholder="IPA"></textarea>
+      </div>
+
+    </div>
+  </div>
+  
+</body>
+</html>
