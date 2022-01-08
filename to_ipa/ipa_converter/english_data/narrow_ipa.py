@@ -1,8 +1,6 @@
 voiceless_stops = ["p", "t", "k"]
-stops = ["t", "d", "k", "g", "p", "b"]
 vowels = ["e", "i", "a", "ɛ", "ʊ", "ə", "ɚ", "u", "ɪ", "o", "ɑ", "æ", "ɔ", "ʌ"]
 dentals = ["θ", "ð"]
-syllabics = ["m", "n", "l", "ɹ"]
 alveolar_stops = ["t", "d"]
 dentalized = ["d", "t", "l", "n"]
 nasals = ["m", "n", "ŋ"]
@@ -60,19 +58,16 @@ def edit_ipa(ipa):
 def is_in_middle(ipa, i):
     return (i != 0 and i != len(ipa) - 1)
 
-def is_not_word_final(ipa, i):
-    return i != len(ipa) - 1
-
-def is_not_word_initial(ipa, i):
-    return i != 0
-
 def is_word_final(ipa, i):
     return i == len(ipa) - 1
+
+def is_word_initial(ipa, i):
+    return i == 0
 
 def is_aspirated(ipa, i):
     if ipa[i] not in voiceless_stops:
         return False
-    if i == 0:
+    if is_word_initial(ipa, i):
         return False if ipa[i + 1] == "ʃ" else True
     if (ipa[i - 1] == "ˈ" or ipa[i - 1] == "ˌ") and ipa[i + 1] != "ʃ":
         return True
@@ -90,7 +85,7 @@ def is_glottal_stop(ipa, i):
         return False
     if is_in_middle(ipa, i) and ipa[i - 1] != "s" and ipa[i + 1] in ["m", "n"]:
         return True
-    if is_not_word_initial(ipa, i) and i < len(ipa) - 2:
+    if not is_word_initial(ipa, i) and i < len(ipa) - 2:
         if ipa[i - 1] in vowels and ipa[i + 1] == "ə" and ipa[i + 2] == "n":
             return True
     return False
@@ -101,12 +96,12 @@ def is_dark_l(ipa, i):
     return False
         
 def is_nasalized(ipa, i):
-    if ipa[i] in vowels and is_not_word_final(ipa, i) and ipa[i + 1] in nasals:
+    if ipa[i] in vowels and not is_word_final(ipa, i) and ipa[i + 1] in nasals:
         return True
     return False
 
 def is_dentalized(ipa, i):
-    if ipa[i] in dentalized and is_not_word_final(ipa, i) and ipa[i + 1] in dentals:
+    if ipa[i] in dentalized and not is_word_final(ipa, i) and ipa[i + 1] in dentals:
         return True
     return False
 
