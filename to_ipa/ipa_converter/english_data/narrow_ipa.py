@@ -30,7 +30,7 @@ def main():
                         narrow_ipa += line[i]
                     
                     else:
-                        narrow_ipa += ipa_list[i]
+                        narrow_ipa += line[i]
                     
                     i += 1
 
@@ -40,9 +40,7 @@ def edit_ipa(ipa):
     edited_ipa = ""
     for i, char in enumerate(ipa):
         edited_char = char
-        if char == "ə":
-            edited_char = add_schwa(ipa, i)
-        elif is_glottal_stop(ipa, i):
+        if is_glottal_stop(ipa, i):
             edited_char = "ʔ"
         else:
             if is_flap(ipa, i):
@@ -53,8 +51,6 @@ def edit_ipa(ipa):
                 edited_char += "\u0303"
             if is_dentalized(ipa, i):
                 edited_char += "\u032A"
-            if is_syllabic(ipa, i):
-                edited_char += "\u0329"
             if is_dark_l(ipa, i):
                 edited_char += "\u0334"
         edited_ipa += edited_char
@@ -78,7 +74,7 @@ def is_aspirated(ipa, i):
         return False
     if i == 0:
         return False if ipa[i + 1] == "ʃ" else True
-    if ipa[i - 1] == "ˈ" or ipa[i - 1] == "ˌ":
+    if (ipa[i - 1] == "ˈ" or ipa[i - 1] == "ˌ") and ipa[i + 1] != "ʃ":
         return True
     return False
 
@@ -99,11 +95,6 @@ def is_glottal_stop(ipa, i):
             return True
     return False
 
-def is_syllabic(ipa, i):
-    if ipa[i] in syllabics and is_word_final(ipa, i) and ipa[i - 1] == "ə":
-        return True
-    return False
-
 def is_dark_l(ipa, i):
     if ipa[i] == "l" and (is_word_final(ipa, i) or ipa[i + 1] not in vowels):
         return True
@@ -119,15 +110,7 @@ def is_dentalized(ipa, i):
         return True
     return False
 
-def add_schwa(ipa, i):
-    if ipa[i] == "ə" and is_word_final(ipa, i + 1) and ipa[i + 1] in syllabics:
-            return ""
-    return "ə" if ipa[i] == "ə" else ""
 
 
-
-
-
-
-if "__name__" == "__main__":
+if __name__ == "__main__":
     main()
