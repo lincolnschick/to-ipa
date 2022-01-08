@@ -25,31 +25,7 @@
     </li>
   </ul>
 </nav>
-
 <body>
-  <div class="centered">
-    <div class="dropshadow">
-      <div class="input-group width">
-
-        <select class="form-control" aria-label="select a language">
-          <option value="english">English</option>
-          <option value="spanish">Spanish</option>
-          <option value="pinyin">Pinyin</option>
-        </select>
-
-        <select class="form-control input-group-append" aria-label="select IPA type">
-          <option value="broad">Broad IPA</option>
-          <option value="narrow">Narrow IPA</option>
-        </select>
-
-      </div>
-
-      <div class="input-group width">
-        <textarea class="form-control non-resizable" id="input" rows="14" placeholder="Enter text"></textarea>
-        <textarea readonly class="form-control input-group-append non-resizable" id="output" rows="14" placeholder="IPA"></textarea>
-      </div>
-    </div>
-  </div>
-  
+{% block content %}{% endblock content %}
 </body>
 </html>
