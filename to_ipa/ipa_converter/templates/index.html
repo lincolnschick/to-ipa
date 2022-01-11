@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
+{% load static %}
 <div class="centered">
   <div class="dropshadow">
     <div class="input-group width">
@@ -18,9 +19,10 @@
     </div>
 
     <div class="input-group width">
-      <textarea class="form-control non-resizable" id="input" rows="14" placeholder="Enter text"></textarea>
-      <textarea readonly class="form-control input-group-append non-resizable" id="output" rows="14" placeholder="IPA"></textarea>
+      <textarea class="form-control txtareas" id="language-input" rows="14" placeholder="Enter text"></textarea>
+      <textarea readonly class="form-control input-group-append txtareas" id="ipa-output" rows="14" placeholder="IPA"></textarea>
     </div>
   </div>
 </div>
+<script src="{% static 'ipa-converter.js' %}"></script>
 {% endblock content %}
