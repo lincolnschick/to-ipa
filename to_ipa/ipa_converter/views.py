@@ -6,16 +6,6 @@ from rest_framework.generics import RetrieveAPIView
 from rest_framework import status
 
 
-class RetrieveNarrowIPA(RetrieveAPIView):
-    lookup_field = 'word'
-    serializer_class = NarrowIPASerializer
-    queryset = NarrowIPA.objects.all()
-    
-class RetrieveBroadIPA(RetrieveAPIView):
-    lookup_field = 'word'
-    serializer_class = BroadIPASerializer
-    queryset = BroadIPA.objects.all()
-
 class GetNarrowIPA(APIView):
     serializer_class = NarrowIPASerializer
     lookup_url_kwarg = 'text'
