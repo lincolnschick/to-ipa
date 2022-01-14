@@ -1,12 +1,14 @@
+import {spanishIPA} from "./spanish.js";
+
 //Global variables
 const langInput = document.getElementById("language-input");
 const langSelection = document.getElementById("lang-select");
 const ipaSelection = document.getElementById("ipa-select");
+const narrowSelect = document.getElementById("narrow");
 
 //API functions
 
 let convert = async (text) => {
-    const words = text.split(" ");
     let ipaOutput = "";
     if (langSelection.value === "english") {
         const ipaAPI = ipaSelection.value === "broad" ? "broad-ipa-api" : "narrow-ipa-api";
@@ -14,9 +16,9 @@ let convert = async (text) => {
         const transcription = await response.json();
         ipaOutput = transcription["transcription"];
     } else if (langSelection.value === "spanish") {
-
+        ipaOutput = convertSpanish(text);
     } else {
-
+        ipaOutput = convertPinyin(text);
     }
     if (langInput.value !== "") {
         document.getElementById('ipa-output').value = ipaOutput;
@@ -28,22 +30,46 @@ let convert = async (text) => {
 var watch = function() {
     var timer = 0;
     return function(callback, ms){
-        clearTimeout (timer);
+        clearTimeout(timer);
         timer = setTimeout(callback, ms);
     }  
 }();
 
+let cleanWord = (word) => {
+    const punctuation = [".", "?", '"', ",", "!", ":", "(", ")", "[", "]", "¿", "¡"];
+    for (let char of punctuation) {
+        word = word.replace(char, "");
+    }
+    return word.toLowerCase();
+}
+
+//Spanish conversion
+
+let convertSpanish = (text) => {
+    const words = text.split(" ");
+    let ipaOutput = "";
+    for (let i = 0; i < words.length; i++) {
+        ipaOutput += spanishIPA(cleanWord(words[i]));
+        if (i !== words.length - 1) {
+            ipaOutput += " ";
+        }
+    }
+    return "[" + ipaOutput + "]";
+}
+
+//Pinyin conversion
+let convertPinyin = (text) => {
+
+}
 
 //Events 
 langInput.onkeyup = (event) => {
     if (event.code === "Space") {
         
         convert(langInput.value);
-    }
-    else if (langInput.value === "") {
+    } else if (langInput.value === "") {
         document.getElementById('ipa-output').value = "";
-    }
-    else {
+    } else {
         watch(function () {
             convert(langInput.value);
         }, 300);
@@ -54,4 +80,12 @@ ipaSelection.onchange = () => {
     if (langInput.value !== "") {
         convert(langInput.value);
     }
+}
+
+langSelection.onchange = () => {
+    narrowSelect.setAttribute("disabled", "disabled");
+    if (langSelection.value === "english") {
+        narrowSelect.removeAttribute("disabled");
+    }
+    convert(langInput.value)
 }
