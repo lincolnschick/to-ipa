@@ -16,7 +16,7 @@ let convert = async (text) => {
         const transcription = await response.json();
         ipaOutput = transcription["transcription"];
     } else if (langSelection.value === "spanish") {
-        ipaOutput = convertSpanish(text);
+        ipaOutput = convertSpanish(text, (ipaSelection.value === "narrow"));
     } else {
         ipaOutput = convertPinyin(text);
     }
@@ -45,11 +45,11 @@ let cleanWord = (word) => {
 
 //Spanish conversion
 
-let convertSpanish = (text) => {
+let convertSpanish = (text, is_narrow) => {
     const words = text.split(" ");
     let ipaOutput = "";
     for (let i = 0; i < words.length; i++) {
-        ipaOutput += spanishIPA(cleanWord(words[i]));
+        ipaOutput += spanishIPA(cleanWord(words[i]), is_narrow);
         if (i !== words.length - 1) {
             ipaOutput += " ";
         }
@@ -59,7 +59,7 @@ let convertSpanish = (text) => {
 
 //Pinyin conversion
 let convertPinyin = (text) => {
-
+    
 }
 
 //Events 
@@ -84,7 +84,7 @@ ipaSelection.onchange = () => {
 
 langSelection.onchange = () => {
     narrowSelect.setAttribute("disabled", "disabled");
-    if (langSelection.value === "english") {
+    if (langSelection.value === "english" || langSelection.value === "spanish") {
         narrowSelect.removeAttribute("disabled");
     }
     convert(langInput.value)
