@@ -7,7 +7,9 @@ const addAccent = {"a": "á", "e": "é", "i": "í", "o": "ó", "u": "ú"};
 const replacements = {"ñ": "ɲ", "j": "x", "v": "b", "ü": "w", "z": "s"};
 const strong = ["a", "e", "o", "á", "é", "ó"];
 const weak = ["i", "u", "í", "ú"];
-const unbreakable = ["pr", "br", "pl", "bl", "fr", "fl", "gr", "gl", "kr", "kl", "pɾ", "bɾ", "fɾ", "gɾ", "kɾ", "tl", "dr", "tr", "dɾ", "tɾ", "gw"];
+const unbreakable = [
+    "pr", "br", "pl", "bl", "fr", "fl", "gr", "gl", "kr", "kl", "pɾ", "bɾ", "fɾ", "gɾ", "kɾ", "tl", "dr", "tr", "dɾ", "tɾ", "gw"
+];
 const voiced_cons = ["b", "d", "g", "l", "m", "n", "r", "ʝ", "ɾ"]
 
 
@@ -78,33 +80,29 @@ let followsCharInList = (ipa, i, characters) => {
 let getAllophonesB = (ipa, i) => {
     if (isInitial(ipa, i) || followsCharInList(ipa, i, ["m", "n"])) {
         return "b";
-    } else {
-        return "β̞";
     }
+    return "β̞";
 }
 
 let getAllophonesD = (ipa, i) => {
     if (isInitial(ipa, i) || followsCharInList(ipa, i, ["m", "n"])) {
         return "d̪";
-    } else {
-        return "ð̞";
     }
+    return "ð̞";
 }
 
 let getAllophonesG = (ipa, i) => {
     if (isInitial(ipa, i) || followsCharInList(ipa, i, ["m", "n"])) {
         return "g";
-    } else {
-        return "ɣ̞";
     }
+    return "ɣ̞";
 }
 
 let getAllophonesCrosstailJ = (ipa, i) => {
     if (isInitial(ipa, i)) {
         return "ɟʝ";
-    } else {
-        return "ʝ";
     }
+    return "ʝ";
 }
 
 let getAllophonesS = (ipa, i) => {
@@ -132,27 +130,27 @@ let getAllophonesN = (ipa, i) => {
 }
 
 let getAllophonesI = (ipa, i) => {
-    if (precedesCharInList(ipa, i, vowels) || followsCharInList(ipa, i, vowels)) {
-        return "j";
-    } else {
+    if (precedesCharInList(ipa, i, [".", "ˈ"])) {
         return "i";
     }
+    if (precedesCharInList(ipa, i, vowels) || followsCharInList(ipa, i, vowels)) {
+        return "j";
+    } 
+    return "i";
 }
 
 let getAllophonesU = (ipa, i) => {
     if (precedesCharInList(ipa, i, vowels) || followsCharInList(ipa, i, vowels)) {
         return "w";
-    } else {
-        return "u";
-    }
+    } 
+    return "u";
 }
 
 let getAllophonesL = (ipa, i) => {
     if (precedesCharInList(ipa, i, ["t", "d"])) {
         return "l̪";
-    } else {
-        return "l";
     }
+    return "l";
 }
 
 let getAllophonesT = (ipa, i) => {
