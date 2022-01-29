@@ -1,24 +1,20 @@
-import {spanishIPA} from "./spanish.js";
+import {getSpanishIPA} from "./spanish.js";
 
-//Global variables
+
 const langInput = document.getElementById("language-input");
 const langSelection = document.getElementById("lang-select");
 const ipaSelection = document.getElementById("ipa-select");
 const narrowSelect = document.getElementById("narrow");
 
-//API functions
-
-let convert = async (text) => {
+let convertToIPA = async (text) => {
     let ipaOutput = "";
     if (langSelection.value === "english") {
         const ipaAPI = ipaSelection.value === "broad" ? "broad-ipa-api" : "narrow-ipa-api";
         const response = await fetch(`http://127.0.0.1:8000/${ipaAPI}?text=${text}`);
         const transcription = await response.json();
         ipaOutput = transcription["transcription"];
-    } else if (langSelection.value === "spanish") {
-        ipaOutput = convertSpanish(text, (ipaSelection.value === "narrow"));
     } else {
-        ipaOutput = convertPinyin(text);
+        ipaOutput = convertSpanishToIPA(text, (ipaSelection.value === "narrow"));
     }
     if (langInput.value !== "") {
         document.getElementById('ipa-output').value = ipaOutput;
@@ -43,13 +39,11 @@ let cleanWord = (word) => {
     return word.toLowerCase();
 }
 
-//Spanish conversion
-
-let convertSpanish = (text, is_narrow) => {
+let convertSpanishToIPA = (text, isNarrow) => {
     const words = text.split(" ");
     let ipaOutput = "";
     for (let i = 0; i < words.length; i++) {
-        ipaOutput += spanishIPA(cleanWord(words[i]), is_narrow);
+        ipaOutput += getSpanishIPA(cleanWord(words[i]), isNarrow);
         if (i !== words.length - 1) {
             ipaOutput += " ";
         }
@@ -57,28 +51,22 @@ let convertSpanish = (text, is_narrow) => {
     return "[" + ipaOutput + "]";
 }
 
-//Pinyin conversion
-let convertPinyin = (text) => {
-    
-}
-
 //Events 
 langInput.onkeyup = (event) => {
     if (event.code === "Space") {
-        
-        convert(langInput.value);
+        convertToIPA(langInput.value);
     } else if (langInput.value === "") {
         document.getElementById('ipa-output').value = "";
     } else {
         watch(function () {
-            convert(langInput.value);
+            convertToIPA(langInput.value);
         }, 300);
     }
 };
 
 ipaSelection.onchange = () => {
     if (langInput.value !== "") {
-        convert(langInput.value);
+        convertToIPA(langInput.value);
     }
 }
 
@@ -87,5 +75,5 @@ langSelection.onchange = () => {
     if (langSelection.value === "english" || langSelection.value === "spanish") {
         narrowSelect.removeAttribute("disabled");
     }
-    convert(langInput.value)
+    convertToIPA(langInput.value)
 }

@@ -1,17 +1,54 @@
 const vowels = ["a", "e", "i", "o", "u", "y", "á", "é", "í", "ó", "ú"];
 const consonants = [
-    "b", "c", "h", "d", "f", "g", "j", "k", "l", "m", "n", "ñ", "p", "q", "r", "s", "t", "v", "w", "x", "z", "ʝ", "ʃ"
+    "b", "c", "h", "d", "f", "g", "j", "k", "l", "m", "n", "ñ", "p", "q", "r", "s", "t", "v", "w", "x", "z", "ʝ", "ʃ", "ɾ"
 ];
 const accents = {"á":"a", "é": "e", "í": "i", "ó": "o", "ú": "u"};
 const addAccent = {"a": "á", "e": "é", "i": "í", "o": "ó", "u": "ú"};
 const replacements = {"ñ": "ɲ", "j": "x", "v": "b", "ü": "w", "z": "s"};
 const strong = ["a", "e", "o", "á", "é", "ó"];
-const weak = ["i", "u", "í", "ú"];
 const unbreakable = [
-    "pr", "br", "pl", "bl", "fr", "fl", "gr", "gl", "kr", "kl", "pɾ", "bɾ", "fɾ", "gɾ", "kɾ", "tl", "dr", "tr", "dɾ", "tɾ", "gw"
+    "pr", "br", "pl", "bl", "fr", "fl", "gr", "gl", "kr", "kl", "pɾ", "bɾ", "fɾ", "gɾ", "kɾ", "tl", "dr", "tr", "dɾ", "tɾ", "gw", "tʃ"
 ];
-const voiced_cons = ["b", "d", "g", "l", "m", "n", "r", "ʝ", "ɾ"]
+const voiced_cons = ["b", "d", "g", "l", "m", "n", "r", "ʝ", "ɾ"];
 
+
+//Helper functions
+let isInitial = (ipa, i) => {
+    if (i === 0 || i === 1 && [".", "ˈ"].includes(ipa[0])) {
+        return true;
+    }
+    return false;
+}
+
+let lastIndex = (word) => {
+    return (word.length - 1);
+}
+
+let precedesCharInList = (ipa, i, characters) => {
+    if (i !== ipa.length - 1 && characters.includes(ipa[i + 1])) {
+        return true;
+    }
+    if (i < ipa.length - 2 && [".", "ˈ"].includes(ipa[i + 1])) {
+        if (characters.includes(ipa[i + 2])) {
+            return true;
+        }
+    }
+    return false;
+}
+
+let followsCharInList = (ipa, i, characters) => {
+    if (i !== 0 && characters.includes(ipa[i - 1])) {
+        return true;
+    }
+    if (i > 1 && [".", "ˈ"].includes(ipa[i - 1])) {
+        if (characters.includes(ipa[i - 2])) {
+            return true;
+        }
+    }
+    return false;
+}
+
+//Functions modifying Spanish characters
 
 let modG = (word, index) => {
     if (index !== lastIndex(word) && ["e", "i", "é", "í"].includes(word[index + 1])) {
@@ -44,37 +81,6 @@ let modZ = (word) => {
         return (word.slice(0, length - 2) + addAccent[word[length - 2]] + "s");
     }
     return word
-}
-
-let isInitial = (ipa, i) => {
-    if (i === 0 || i === 1 && [".", "ˈ"].includes(ipa[0])) {
-        return true;
-    }
-    return false;
-}
-
-let precedesCharInList = (ipa, i, characters) => {
-    if (i !== ipa.length - 1 && characters.includes(ipa[i + 1])) {
-        return true;
-    }
-    if (i < ipa.length - 2 && [".", "ˈ"].includes(ipa[i + 1])) {
-        if (characters.includes(ipa[i + 2])) {
-            return true;
-        }
-    }
-    return false;
-}
-
-let followsCharInList = (ipa, i, characters) => {
-    if (i !== 0 && characters.includes(ipa[i - 1])) {
-        return true;
-    }
-    if (i > 1 && [".", "ˈ"].includes(ipa[i - 1])) {
-        if (characters.includes(ipa[i - 2])) {
-            return true;
-        }
-    }
-    return false;
 }
 
 let getAllophonesB = (ipa, i) => {
@@ -110,7 +116,6 @@ let getAllophonesS = (ipa, i) => {
         return "z̪";
     }
     if (precedesCharInList(ipa, i, voiced_cons)) {
-        console.log(ipa)
         return "z";
     }
     if (precedesCharInList(ipa, i, ["t"])) {
@@ -130,19 +135,28 @@ let getAllophonesN = (ipa, i) => {
 }
 
 let getAllophonesI = (ipa, i) => {
-    if (precedesCharInList(ipa, i, [".", "ˈ"])) {
+    if (precedesCharInList(ipa, i, [".", "ˈ"]) && precedesCharInList(ipa, i, vowels)) {
         return "i";
     }
-    if (precedesCharInList(ipa, i, vowels) || followsCharInList(ipa, i, vowels)) {
+    if (followsCharInList(ipa, i, [".", "ˈ"]) && followsCharInList(ipa, i, vowels)) {
+        return "i";
+    }
+    if (precedesCharInList(ipa, i, vowels)) {
         return "j";
-    } 
+    }
     return "i";
 }
 
 let getAllophonesU = (ipa, i) => {
-    if (precedesCharInList(ipa, i, vowels) || followsCharInList(ipa, i, vowels)) {
+    if (followsCharInList(ipa, i, [".", "ˈ"]) && followsCharInList(ipa, i, vowels)) {
+        return "u";
+    }
+    if (precedesCharInList(ipa, i, [".", "ˈ"]) && precedesCharInList(ipa, i, vowels)) {
+        return "u";
+    }
+    if (precedesCharInList(ipa, i, vowels)) {
         return "w";
-    } 
+    }
     return "u";
 }
 
@@ -160,8 +174,25 @@ let getAllophonesT = (ipa, i) => {
     return "t̪";
 }
 
-function lastIndex(word) {
-    return (word.length - 1);
+let isNonSyllabic = (ipa, i) => {
+    if (!followsCharInList(ipa, i, [".", "ˈ"]) && followsCharInList(ipa, i, vowels)) {
+        return true;
+    }
+    return false;
+}
+
+let checkDiphthongs = (ipa) => {
+    let ipaOutput = "";
+    for (let i = 0; i < ipa.length; i++) {
+        if (ipa[i] === "i" && isNonSyllabic(ipa, i)) {
+            ipaOutput += "i̯";
+        } else if (ipa[i] === "u" && isNonSyllabic(ipa, i)) {
+            ipaOutput += "u̯";
+        } else {
+            ipaOutput += ipa[i];
+        }
+    }
+    return ipaOutput;
 }
 
 const allophones = {
@@ -176,31 +207,99 @@ const allophones = {
     "l": getAllophonesL,
     "t": getAllophonesT
 };
-const replaceFuncs = {"g": modG, "n": modN, "x": modX};
+const replaceFuncs = {
+    "g": modG, 
+    "n": modN, 
+    "x": modX
+};
 
-function spanishIPA(word, is_narrow) {
-    word = changeLetters(word);
-    word = modZ(word);
+let addNasals = (ipa) => {
     let ipaOutput = "";
-    for (let i = 0; i < word.length; i++) {
-        if (word[i] in replacements) {
-            ipaOutput += replacements[word[i]];
-        } else if (word[i] in replaceFuncs) {
-            ipaOutput += replaceFuncs[word[i]](word, i);
+    for (let i = 0; i < ipa.length; i++) {
+        if (precedesCharInList(ipa, i, ["m", "n", "ŋ"]) && vowels.includes(ipa[i])) {
+            ipaOutput += ipa[i] + "\u0303";
+        } else if (i < ipa.length - 3 && vowels.includes(ipa[i]) && ipa[i + 2] === "\u032F" && precedesCharInList(ipa, i + 2, ["m", "n", "ŋ"])) {
+            ipaOutput += ipa[i] + "\u0360";
         } else {
-            ipaOutput += word[i];
+            ipaOutput += ipa[i];
         }
-    }
-    ipaOutput = syllabify(ipaOutput);
-    ipaOutput = addStress(ipaOutput);
-    for (const accent in accents) {
-        ipaOutput = ipaOutput.replace(accent, accents[accent]);
-    }
-    if (is_narrow) {
-        ipaOutput = narrowSpanish(ipaOutput);
     }
     return ipaOutput;
 }
+
+let changeLetters = (word) => {
+    let replacedWord = "";
+    for (let i = 0; i < word.length; i++) {
+        if (word[i] === "y") {
+            if (i !== lastIndex(word) &&  i !== 0 && consonants.includes(word[i + 1]) && vowels.includes(word[i - 1])) {
+                replacedWord += "i";
+            }
+            else if (i === lastIndex(word) && i !== 0 && vowels.includes(word[i - 1])) {
+                replacedWord += "i";
+            } else if (word === "y") {
+                replacedWord += "i";
+            } else {
+                replacedWord += "ʝ";
+            }
+        } else if (word[i] === "h") {
+            if (i < lastIndex(word) - 1) {
+                if (word[i + 1] === "u" || word[i + 1] === "ú") {
+                    if (i === 0 && vowels.includes(word[i + 2])) {
+                        replacedWord += "w";
+                        i++;
+                    } else if (i !== 0 && vowels.includes(word[i - 1]) && vowels.includes(word[i + 2])) {
+                        replacedWord += "w";
+                        i++;
+                    }
+                }
+                else if (word[i + 1] === "i" || word[i + 1] === "í") {
+                    if (i === 0 && vowels.includes(word[i + 2])) {
+                        replacedWord += "ʝ";
+                        i++;
+                    } else if (i !== 0 && vowels.includes(word[i - 1]) && vowels.includes(word[i + 2])) {
+                        replacedWord += "ʝ";
+                        i++;
+                    }
+                }
+            }
+        } else if (word[i] === "c") {
+            if (i !== lastIndex(word) && word[i + 1] === "h") {
+                replacedWord += "tʃ";
+                i++;
+            } else if (i !== lastIndex(word) && ["e", "i", "é", "í"].includes(word[i + 1])) {
+                replacedWord += "s";
+            } else {
+                replacedWord += "k";
+            }
+        } else if (word[i] === "l") {
+            if (i !== lastIndex(word) && word[i + 1] === "l") {
+                replacedWord += "ʝ";
+                i++;
+            } else {
+                replacedWord += "l";
+            }
+        } else if (word[i] === "r") {
+            if (i === 0) {
+                replacedWord += "r"
+            } else if (i !== lastIndex(word) && word[i + 1] === "r") {
+                replacedWord += "r"
+                i++;
+            } else if (i !== 0 && ["l", "n", "s"].includes(word[i - 1])) {
+                replacedWord += "r";
+            } else {
+                replacedWord += "ɾ";
+            }
+        } else if (word[i] === "q") {
+            replacedWord += "k";
+            i++;
+        } else {
+            replacedWord += word[i];
+        }
+    }
+    return replacedWord;
+}
+
+//Main functions
 
 let syllabify = (word) => {
     let i = 0;
@@ -259,9 +358,13 @@ let syllabify = (word) => {
                 }
             } else if (i !== length - 1) {
                 // 1 consonant
-                word = word.slice(0, i) + "." + word.slice(i);
-                changedLen = true;
-                i += 1;
+                if (word[i] === "h" && vowels.includes(word[i + 1]) && vowels.includes(word[i - 1])) {
+                    word = word.slice(0, i) + "." + word.slice(i + 1);
+                } else {
+                    word = word.slice(0, i) + "." + word.slice(i);
+                    changedLen = true;
+                    i += 1;
+                }
             }
         } else {
             //Skip initial consonant (cluster)
@@ -316,89 +419,31 @@ let addStress = (word) => {
     return word;
 }
 
-let changeLetters = (word) => {
-    let replacedWord = "";
+let getSpanishIPA = (word, isNarrow) => {
+    word = changeLetters(word);
+    word = modZ(word);
+    let ipaOutput = "";
     for (let i = 0; i < word.length; i++) {
-        if (word[i] === "y") {
-            if (i !== lastIndex(word) &&  i !== 0 && consonants.includes(word[i + 1]) && vowels.includes(word[i - 1])) {
-                replacedWord += "i";
-            }
-            else if (i === lastIndex(word) && i !== 0 && vowels.includes(word[i - 1])) {
-                replacedWord += "i";
-            } else if (word === "y") {
-                replacedWord += "i";
-            } else {
-                replacedWord += "ʝ";
-            }
-        } else if (word[i] === "h") {
-            if (i < lastIndex(word) - 1) {
-                if (word[i + 1] === "u" || word[i + 1] === "ú") {
-                    if (i === 0 && vowels.includes(word[i + 2])) {
-                        replacedWord += "w";
-                        i++;
-                    } else if (i !== 0 && vowels.includes(word[i - 1]) && vowels.includes(word[i + 2])) {
-                        replacedWord += "w";
-                        i++;
-                    }
-                }
-                if (word[i + 1] === "i" || word[i + 1] === "í") {
-                    if (i === 0 && vowels.includes(word[i + 2])) {
-                        replacedWord += "ʝ";
-                        i++;
-                    } else if (i !== 0 && vowels.includes(word[i - 1] && vowels.includes(word[i + 2]))) {
-                        replacedWord += "ʝ";
-                        i++;
-                    }
-                }
-            }
-        } else if (word[i] === "c") {
-            if (i !== lastIndex(word) && word[i + 1] === "h") {
-                replacedWord += "tʃ";
-                i++;
-            } else if (i !== lastIndex(word) && ["e", "i", "é", "í"].includes(word[i + 1])) {
-                replacedWord += "s";
-            } else {
-                replacedWord += "k";
-            }
-        } else if (word[i] === "l") {
-            if (i !== lastIndex(word) && word[i + 1] === "l") {
-                replacedWord += "ʝ";
-                i++;
-            } else {
-                replacedWord += "l";
-            }
-        } else if (word[i] === "r") {
-            if (i == 0) {
-                replacedWord += "r"
-            } else if (i !== lastIndex(word) && word[i + 1] === "r") {
-                replacedWord += "r"
-                i++;
-            }
-            else if (i !== 0 && consonants.includes(word[i - 1])) {
-                let replaced = false;
-                for (let j = 0; j < i; j++) {
-                    if (vowels.includes(word[j])) {
-                        replacedWord += "r";
-                        replaced = true;
-                    }
-                }
-                if (!replaced) {
-                    replacedWord += "ɾ";
-                }
-            } else {
-                replacedWord += "ɾ";
-            }
-        } else if (word[i] === "q") {
-            replacedWord += "k";
-            i++;
+        if (word[i] in replacements) {
+            ipaOutput += replacements[word[i]];
+        } else if (word[i] in replaceFuncs) {
+            ipaOutput += replaceFuncs[word[i]](word, i);
         } else {
-            replacedWord += word[i];
+            ipaOutput += word[i];
         }
     }
-    return replacedWord;
+    ipaOutput = syllabify(ipaOutput);
+    ipaOutput = addStress(ipaOutput);
+    for (const accent in accents) {
+        ipaOutput = ipaOutput.replace(accent, accents[accent]);
+    }
+    if (isNarrow) {
+        ipaOutput = getNarrowSpanishIPA(ipaOutput);
+    }
+    return ipaOutput;
 }
 
-let narrowSpanish = (ipa) => {
+let getNarrowSpanishIPA = (ipa) => {
     let narrowOutput = "";
     for (let i = 0; i < ipa.length; i++) {
         const char = ipa[i];
@@ -408,9 +453,10 @@ let narrowSpanish = (ipa) => {
             narrowOutput += char;
         }
     }
+    //Diphthong check has to be done after 
+    narrowOutput = checkDiphthongs(narrowOutput);
+    narrowOutput = addNasals(narrowOutput);
     return narrowOutput;
 }
 
-
-
-export {vowels, consonants, accents, replaceFuncs, replacements, spanishIPA, lastIndex, modG, modX, modN, syllabify};
+export {getSpanishIPA};
