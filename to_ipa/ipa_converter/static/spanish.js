@@ -48,6 +48,10 @@ let followsCharInList = (ipa, i, characters) => {
     return false;
 }
 
+let isAlpha = (char) => {
+    return ((/[a-zA-Z]/).test(char) || ["ñ", "á", "é", "í", "ó", "ú", "ü"].includes(char));
+}
+
 //Functions modifying Spanish characters
 
 let modG = (word, index) => {
@@ -80,7 +84,7 @@ let modZ = (word) => {
     if (word.slice(-1) === "z" && length > 1 && vowels.includes(word[length - 2])) {
         return (word.slice(0, length - 2) + addAccent[word[length - 2]] + "s");
     }
-    return word
+    return word;
 }
 
 let getAllophonesB = (ipa, i) => {
@@ -299,6 +303,16 @@ let changeLetters = (word) => {
     return replacedWord;
 }
 
+let cleanSpanish = (word) => {
+    let cleanedWord = "";
+    for (let char of word) {
+        if (isAlpha(char)) {
+            cleanedWord += char;
+        }
+    }
+    return cleanedWord;
+}
+
 //Main functions
 
 let syllabify = (word) => {
@@ -368,7 +382,7 @@ let syllabify = (word) => {
             }
         } else {
             //Skip initial consonant (cluster)
-            while (i + 1 < word.length && !vowels.includes(word[i + 1])) {
+            while (i < word.length - 1 && !vowels.includes(word[i + 1])) {
                 i += 1;
             }
         }
@@ -420,6 +434,7 @@ let addStress = (word) => {
 }
 
 let getSpanishIPA = (word, isNarrow) => {
+    word = cleanSpanish(word);
     word = changeLetters(word);
     word = modZ(word);
     let ipaOutput = "";
