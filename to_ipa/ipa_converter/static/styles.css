@@ -22,3 +22,16 @@
 @media (min-width: 1025px) {
     .width {width: 60rem;}
 }
+
+.about {
+    width: 95vw;
+}
+@media (min-width: 1025px) {
+    .about {width: 40rem;}
+}
+
+.about-container {
+    display: flex;
+    justify-content: center;
+    padding-top: 40px;
+}

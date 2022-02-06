@@ -1,4 +1,30 @@
 {% extends "base.html" %}
 {% block content %}
-
+<div class="about-container">
+  <div class="about">
+    <h3>About</h3>
+    <p>
+      ToIPA converts English or Spanish text into phonetic transcriptions in the International Phonetic Alphabet (IPA). 
+      Most current IPA converters only offer transcriptions at the phonemic level, 
+      but ToIPA also provides narrow phonetic transcriptions. If you are unfamiliar with IPA, see this page, 
+      <a href="https://en.wikipedia.org/wiki/International_Phonetic_Alphabet">International Phonetic Alphabet</a>. 
+      Transcriptions most accurately represent how words are pronounced in isolation.
+    </p>
+    <h5>English</h5>
+    <p>
+      The English transcriptions come from 
+      <a href="https://github.com/lotusfa/IPA-Translator">IPA-Translator</a>, which itself comes from the CMU pronouncing dictionary.  
+      These were modified using phonological rules from phoneticists Dr. Allard Jongman and Dr. Henning Reetz. 
+      Transcriptions are based on General American English. Slashes between the IPA indicate multiple common pronunciations.
+    </p>
+    <h5>Spanish</h5>
+    <p>
+      The Spanish transcriptions, unlike the English transcriptions, are generated based on Spanish spelling. 
+      The broad transcriptions are based on grapheme to phoneme rules from 
+      <a href="http://elies.rediris.es/elies4/Cap6.htm#6.1.%20Reglas%20de%20transcripci%C3%B3n%20grafema-fonema">Reglas de transcripción grafema-fonema</a>. 
+      The narrow transcriptions are based on data on allophones in Mexican Spanish from 
+      <a href="https://link.springer.com/article/10.1007/s10579-009-9109-9">The Corpus DIMEx100: transcription and evaluation</a>.
+    </p>
+  </div>
+</div>
 {% endblock %}
