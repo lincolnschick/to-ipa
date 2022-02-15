@@ -52,7 +52,7 @@ class GetBroadIPA(APIView):
                     data = BroadIPASerializer(transcriptions[0]).data
                     transcription_string += format_data(data)
                 else:
-                    transcription_string += f"({word})"
+                    transcription_string += f'"{word}"'
                 if i < len(text) - 1:
                     transcription_string += " "
             transcription_string += "]"
