@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
 {% load static %}
-<div class="centered">
-  <div class="dropshadow">
-    <div class="input-group width">
+<div class="centered dropshadow">
+  <div class="width">
+    <div class="input-group">
 
       <select class="form-control" aria-label="select a language" id="lang-select">
         <option value="english">English</option>
@@ -17,7 +17,7 @@
 
     </div>
 
-    <div class="input-group width">
+    <div class="input-group">
       <textarea class="form-control txtareas" id="language-input" rows="6" placeholder="Enter text"></textarea>
       <textarea readonly class="form-control input-group-append txtareas" id="ipa-output" rows="6" placeholder="IPA"></textarea>
     </div>
