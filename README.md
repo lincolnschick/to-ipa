@@ -1,5 +1,4 @@
 # To-IPA
-## Introduction
 ToIPA converts English or Spanish text into phonetic transcriptions in the International Phonetic Alphabet (IPA). Most current IPA converters only offer transcriptions at the phonemic level, but ToIPA also provides narrow phonetic transcriptions. If you are unfamiliar with IPA, see this page, International Phonetic Alphabet. Transcriptions most accurately represent how words are pronounced in isolation.
 
 ### English
