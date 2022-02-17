@@ -5,6 +5,25 @@ const langInput = document.getElementById("language-input");
 const langSelection = document.getElementById("lang-select");
 const ipaSelection = document.getElementById("ipa-select");
 const narrowSelect = document.getElementById("narrow");
+const textboxes = document.getElementById("textboxes");
+const outputBox = document.getElementById("ipa-output");
+
+let adjustDisplay = () => {
+    //If large screen
+    if (window.matchMedia("(min-width: 1025px)").matches) {
+        textboxes.className = "input-group";
+        langInput.setAttribute("rows", "6");
+        outputBox.setAttribute("rows", "6");
+    } else {
+        textboxes.className = "";
+        langInput.setAttribute("rows", "4");
+        outputBox.setAttribute("rows", "4");
+    }
+}
+
+window.addEventListener("resize", adjustDisplay);
+//Call initially
+adjustDisplay();
 
 let convertToIPA = async (text) => {
     let ipaOutput = "";
@@ -17,9 +36,9 @@ let convertToIPA = async (text) => {
         ipaOutput = convertSpanishToIPA(text, (ipaSelection.value === "narrow"));
     }
     if (langInput.value !== "") {
-        document.getElementById('ipa-output').value = ipaOutput;
+        outputBox.value = ipaOutput;
     } else {
-        document.getElementById('ipa-output').value = "";
+        outputBox.value = "";
     }
 }
 
@@ -56,7 +75,7 @@ langInput.onkeyup = (event) => {
     if (event.code === "Space") {
         convertToIPA(langInput.value);
     } else if (langInput.value === "") {
-        document.getElementById('ipa-output').value = "";
+        outputBox.value = "";
     } else {
         watch(function () {
             convertToIPA(langInput.value);

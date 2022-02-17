@@ -27,7 +27,7 @@
     width: 95vw;
 }
 @media (min-width: 1025px) {
-    .about {width: 40rem;}
+    .about {width: 50rem;}
 }
 
 .about-container {
