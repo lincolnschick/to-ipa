@@ -9,6 +9,8 @@ settings.py
 # Backup files # 
 *.bak 
 
+.DS_Store
+
 # Python # 
 *.py[cod] 
 *$py.class 
